@@ -9,10 +9,10 @@ class ProductDetailView(DetailView):
 	queryset = Product.objects.all()
 	template_name = "products/detail.html"
 
-	def get_context_data(self, *args, **kwargs):
-		context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
-		print(context)
-		return context
+	# def get_context_data(self, *args, **kwargs):
+	# 	context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
+	# 	print(context)
+	# 	return context
 
 
 # Function based view
