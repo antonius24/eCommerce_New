@@ -7,13 +7,23 @@ from .models import Product
 
 # Class based view
 class ProductDetailView(DetailView):
-	queryset = Product.objects.all()
+	#queryset = Product.objects.all()
 	template_name = "products/detail.html"
 
-	# def get_context_data(self, *args, **kwargs):
-	# 	context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
-	# 	print(context)
-	# 	return context
+	def get_context_data(self, *args, **kwargs):
+		context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
+		print(context)
+		return context
+
+	def get_object(self, *args, **kwargs):
+		request = self.request
+		pk = self.kwargs.get('pk')
+		instance = Product.objects.get_by_id(pk)
+		print(instance)
+		if instance is None:
+			raise Http404("Product doesn't exist")
+		return instance
+
 
 
 # Function based view
@@ -28,27 +38,36 @@ def product_detail_view(request, pk=None, *args, **kwargs):
 	# except:
 	# 	print("huh?")
 
-	qs = Product.objects.filter(id=pk)
-	if qs.exists() and qs.count() == 1:
-		instance = qs.first()
-	else:
+	instance = Product.objects.get_by_id(pk)
+	print(instance)
+	if instance is None:
 		raise Http404("Product doesn't exist")
 
+	# qs = Product.objects.filter(id=pk)
+	# if qs.exists() and qs.count() == 1:
+	# 	instance = qs.first()
+	# else:
+	# 	raise Http404("Product doesn't exist")
+
 	context = {
-		'object_list': instance
+		'object': instance
 	}
 	return render(request, "products/detail.html", context)
 
 
 # Class based viewf/
 class ProductListView(ListView):
-	queryset = Product.objects.all()
+	#queryset = Product.objects.all()
 	template_name = "products/list.html"
 
 	# def get_context_data(self, *args, **kwargs):
 	# 	context = super(ProductListView, self).get_context_data(*args, **kwargs)
 	# 	print(context)
 	# 	return context
+
+	def get_queryset(self, ):
+		request = self.request
+		return Product.objects.all()
 
 def product_list_view(request):
 	queryset = Product.objects.all()
